@@ -1,7 +1,13 @@
+# This section is the code for how I created and trained the AI
+# I used the keras and numpy library to do so 
+
+
 # from numpy import loadtxt
 # from keras.models import Sequential
 # from keras.layers import Dense
-#
+
+
+#   
 # #inputs:
 # #1 fever
 # #2 dry cough
@@ -10,9 +16,7 @@
 # #5 difficulty breathing
 # #6 new loss of taste or smell
 # #7 headache
-# #8 congestion
-# #compile
-# #output: no symptoms, observe, checked, emergency
+#These are the inputs in the samples from left to right
 #
 # dataset = loadtxt('sample.cvs', delimiter=',')
 #
@@ -21,7 +25,9 @@
 #
 # for i in range(len(y)):
 #   y[i] *= 2
-#
+
+
+#This is the section for creating the layers the AI would use
 # model = Sequential()
 # model.add(Dense(16, input_dim=7, activation='relu'))
 # model.add(Dense(8, activation='softmax'))
@@ -40,6 +46,8 @@
 # # model.save("model.h5")
 #
 # print("Saved model to disk")
+# This is where I saved the model so we can access it in the future
+#
 
 from numpy import loadtxt
 from keras.models import model_from_json
@@ -54,6 +62,8 @@ loaded_model = model_from_json(loaded_model_json)
 loaded_model.load_weights("model.h5")
 loaded_model.compile(loss="sparse_categorical_crossentropy", optimizer='adam', metrics=['accuracy'])
 
+#This is where we opened and compiled the model we created beforehand
+
 print("This is a priority setter for doctors to deal with COVID patients effectively.\n"
       "Because there are millions of COVID patients, some take higher priorities then the rest, "
       "due to their symptoms")
@@ -61,6 +71,7 @@ text = ""
 while text != "exit":
     while True:
         try:
+            #asking questions about symptoms
             name = input("Please Type Your Name: ")
             fever = int(input("Rate Fever from 1-10: "))
             cough = int(input("Rate Your Dry Cough from 1-10: "))
@@ -98,15 +109,21 @@ while text != "exit":
         # end of file is reached
         if not line:
             break
+
+        # name of the current person
         current_name = line.strip().split(":")[0]
+
+        #rating of his severity of symptoms
         rating = line.strip().split(":")[1].split(',')[-1]
 
         patient_dict[current_name] = rating
 
+    #sort the symptoms from worst to least
     sorted_tuple = sorted(patient_dict.items(), key=operator.itemgetter(1), reverse=True)
     printing_dict = collections.OrderedDict(sorted_tuple)
     f.close()
 
+    #print out all of the symptoms
     for keys in printing_dict.keys():
         print(keys + ": " + printing_dict[keys])
     text = input("If you would like to exit, spell 'exit'. If you would like to continue, press Enter:")
